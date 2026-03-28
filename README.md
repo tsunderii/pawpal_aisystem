@@ -8,6 +8,22 @@
 - **Priority-based planning** — tasks are ranked high → medium → low and packed into the day until `available_minutes` runs out; anything that doesn't fit is surfaced in a "Skipped" list so nothing is forgotten
 - **Chronological sorting** — `sort_by_time()` orders any task list by time slot (morning → afternoon → evening) using a lookup-table key, so the daily plan always reads the way a real day flows
 - **Per-pet filtering** — `filter_tasks(pet_name, completed)` lets the UI show only the tasks belonging to a chosen pet, with optional completion filtering
+- **Weighted urgency scoring** *(Challenge 1 — advanced algorithm)* — `weighted_score(task)` computes a numeric score for each task from three additive components:
+  - *Priority base*: high = 100, medium = 50, low = 10
+  - *Overdue bonus*: +5 per day past `due_date`, capped at +50 — tasks that are late rise automatically
+  - *Efficiency bonus*: +15 when the task uses ≤ 25 % of available time, rewarding quick wins
+
+  `build_weighted_plan()` ranks by this score (descending) instead of the raw priority bucket, so an overdue medium task can outrank an on-time high task, and a 5-minute grooming task beats a lower-scoring but time-consuming one. The UI exposes this as a **Weighted Score** mode toggle alongside the standard Priority mode.
+
+**How Agent Mode was used to implement weighted scoring**
+
+Claude Code's Agent Mode was prompted to design and implement the algorithm end-to-end:
+
+1. *Design prompt* — "Design a numeric urgency scoring function for a pet-care task scheduler. The score should account for priority tier, how many days overdue the task is, and whether the task is a quick win relative to available time. Return the formula and Python implementation."
+2. *Review prompt* — "Review `weighted_score()` and `build_weighted_plan()` in `pawpal_system.py`. Are there edge cases (no due_date, zero available_minutes) that could cause errors? Suggest fixes."
+3. *UI integration prompt* — "Add a radio toggle to the Streamlit schedule section so the user can switch between priority-based and weighted-score scheduling without losing their task data."
+
+Agent Mode compressed what would have been several design-and-debug cycles into a single guided session, surfacing the `division-by-zero` guard on `available_minutes` and the `min(..., 50)` cap on the overdue bonus before they could become runtime bugs.
 
 **Conflict Detection**
 - **Same-pet slot clash** — warns when one pet has two tasks assigned to the same time slot

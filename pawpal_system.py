@@ -137,6 +137,72 @@ class Scheduler:
         self.schedule: list[Task] = []
         self.skipped: list[Task] = []  # tasks that didn't fit in available time
 
+    # ------------------------------------------------------------------
+    # Weighted scoring (Algorithm 3)
+    # ------------------------------------------------------------------
+
+    def weighted_score(self, task: Task) -> float:
+        """Return a numeric urgency score — higher means schedule sooner.
+
+        Three additive components:
+        1. Priority base  — high: 100, medium: 50, low: 10.
+        2. Overdue bonus  — +5 per day the task is past its due_date (capped at 50).
+           Tasks without a due_date get +0.
+        3. Efficiency bonus — +15 when the task uses ≤ 25 % of the owner's available
+           time, rewarding 'quick wins' that keep momentum going.
+
+        Args:
+            task: The Task to score.
+
+        Returns:
+            A float score; higher = more urgent.
+        """
+        base = {"high": 100, "medium": 50, "low": 10}.get(task.priority, 10)
+
+        overdue = 0.0
+        if task.due_date is not None:
+            days_late = (date.today() - task.due_date).days
+            if days_late > 0:
+                overdue = min(days_late * 5, 50)
+
+        efficiency = 0.0
+        if self.owner.available_minutes > 0:
+            ratio = task.duration_minutes / self.owner.available_minutes
+            if ratio <= 0.25:
+                efficiency = 15.0
+
+        return base + overdue + efficiency
+
+    def build_weighted_plan(self) -> list[Task]:
+        """Pack tasks by weighted_score (descending) instead of raw priority bucket.
+
+        Produces a schedule where overdue high-priority tasks rank highest and
+        quick wins rise above slow low-priority tasks of the same tier.
+        Extras that don't fit in available_minutes go to self.skipped.
+
+        Returns:
+            The ordered list of scheduled Task objects (also stored in self.schedule).
+        """
+        self.schedule = []
+        self.skipped = []
+
+        candidates = [
+            t for pet in self.owner.pets for t in pet.tasks
+            if not t.is_complete or t.recurring
+        ]
+
+        ranked = sorted(candidates, key=lambda t: self.weighted_score(t), reverse=True)
+
+        time_remaining = self.owner.available_minutes
+        for task in ranked:
+            if task.duration_minutes <= time_remaining:
+                self.schedule.append(task)
+                time_remaining -= task.duration_minutes
+            else:
+                self.skipped.append(task)
+
+        return self.schedule
+
     def sort_by_time(self, tasks: list[Task] | None = None) -> list[Task]:
         """Return tasks sorted by preferred_time (morning → afternoon → evening → unset).
 
