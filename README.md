@@ -50,3 +50,38 @@ pip install -r requirements.txt
 5. Add tests to verify key behaviors.
 6. Connect your logic to the Streamlit UI in `app.py`.
 7. Refine UML so it matches what you actually built.
+
+## Testing PawPal+
+
+### Run the tests
+
+```bash
+python3 -m pytest tests/test_pawpal.py -v
+```
+
+### What the tests cover
+
+**Sorting correctness**
+- Tasks added in any order are returned morning → afternoon → evening
+- Tasks with no `preferred_time` always sort to the end
+- An empty schedule returns `[]` without raising an error
+
+**Recurrence logic**
+- Marking a daily task complete spawns a new task due tomorrow (`today + 1 day`)
+- Marking a weekly task complete spawns a new task due in 7 days
+- One-off tasks (`frequency="once"`) produce no next occurrence
+- A brand-new pet with no tasks has an empty pending list
+
+**Conflict detection**
+- Two tasks for the same pet in the same time slot produce a conflict warning
+- Tasks in different slots for the same pet produce no conflict
+- High-priority tasks across two different pets in the same slot produce a cross-pet warning
+- A slot whose total duration exceeds 60 minutes produces an overload warning
+
+### Confidence Level
+
+★★★★☆ (4 / 5)
+
+- All 13 tests pass across the three required behaviors
+- Happy paths and edge cases (empty pet, one-off tasks, no-conflict scenarios) are covered
+- One star held back — `build_plan()` time-budget logic and invalid inputs (unknown priority, negative duration) are not yet tested
