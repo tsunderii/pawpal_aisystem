@@ -2,15 +2,28 @@
 
 ## 1. System Design
 
+(Core actions)
+Pet care tasks, generating today's plans, viewing today's tasks, and checking off today's tasks
+
 **a. Initial design**
 
 - Briefly describe your initial UML design.
 - What classes did you include, and what responsibilities did you assign to each?
 
+My initial UML design is arranged in a linear hierarchy from Owner to Pet objects, each Pet holding a list of Task objects, and a seperate Scheduler class. My classes include:
+
+Task - Represents a single care activity. Holds information for what task is being done, how long, and how important the task is.
+Pet - The animal being cared for -- Owns the list of tasks and knows what tasks are still pending. Sort of the natural container for tasks belonging to the specific animal
+Owner - The user -- Holding the time constraints and the list of pets
+Scheduler - (Seperate class) Planning logic, taking in Owner as input. The only class that makes deicisons, reading owner's constraints and selecting the tasks that fit, producing an ordered plan with explanation
+
 **b. Design changes**
 
-- Did your design change during implementation?
-- If yes, describe at least one change and why you made it.
+Yes, two changes were made after an AI review of the class skeleton:
+
+1. Added `pet_name: Optional[str]` to `Task`. The original design had no back-reference from a task to its pet. Once `Scheduler.build_plan()` flattens all tasks into a single list via `get_all_tasks()`, it loses track of which animal each task belongs to. Without this field, the daily plan couldn't say "Walk Max" vs "Feed Luna". The field is set automatically when `Pet.add_task()` is called.
+
+2. Added `skipped: list[Task]` to `Scheduler`. The original skeleton only stored the tasks that made it into the plan. Without a place to record skipped tasks, `get_explanation()` couldn't explain *why* certain tasks were left out (e.g., didn't fit in available time). This attribute gives the explainability feature something to work with.
 
 ---
 
