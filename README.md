@@ -22,6 +22,15 @@ Your final app should:
 - Display the plan clearly (and ideally explain the reasoning)
 - Include tests for the most important scheduling behaviors
 
+## Smarter Scheduling
+
+The `Scheduler` class includes four algorithmic improvements beyond the basic daily plan:
+
+- **`sort_by_time()`** — orders any task list by time slot (morning → afternoon → evening) using a lambda key, so the daily plan reads in chronological order regardless of how tasks were added.
+- **`filter_tasks(pet_name, completed)`** — filters across all pets by owner name and/or completion status, making it easy to view only what still needs to be done for a specific pet.
+- **`detect_conflicts()`** — scans pending tasks and returns plain-English warning messages for three situations: the same pet having multiple tasks in one slot, high-priority tasks competing across different pets in the same slot, and any slot whose total duration exceeds 60 minutes. It never crashes the app — it always returns a list (empty means no conflicts).
+- **Recurring tasks (`frequency` + `mark_task_complete()`)** — tasks can be marked `"daily"` or `"weekly"`. When completed, `Scheduler.mark_task_complete()` automatically adds the next occurrence to the pet's task list with a new `due_date` calculated using Python's `timedelta` (today + 1 day for daily, today + 7 days for weekly).
+
 ## Getting started
 
 ### Setup
