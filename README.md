@@ -47,7 +47,21 @@ Agent Mode compressed what would have been several design-and-debug cycles into 
 
 ## 📸 Demo
 
-<a href="/course_images/ai110/pawpal_screenshot.png" target="_blank"><img src='/course_images/ai110/pawpal_screenshot.png' title='PawPal App' width='' alt='PawPal App' class='center-block' /></a>
+**Owner setup**
+
+![Owner Info](Screenshot%202026-03-28%20at%205.03.07%20PM.png)
+
+**Adding a pet**
+
+![Add a Pet](Screenshot%202026-03-28%20at%205.03.17%20PM.png)
+
+**Adding a task**
+
+![Add a Task](Screenshot%202026-03-28%20at%205.03.51%20PM.png)
+
+**Pending tasks and schedule generation**
+
+![Pending Tasks and Schedule](Screenshot%202026-03-28%20at%205.03.59%20PM.png)
 
 ---
 

@@ -34,12 +34,6 @@ def fmt_time(t: str | None) -> str:
 def fmt_freq(f: str) -> str:
     return f"{FREQ_EMOJI.get(f, '')} {f}"
 
-def _priority_row_style(row: pd.Series) -> list[str]:
-    """Return CSS style strings for every cell in a row based on its Priority column."""
-    raw = row.get("_priority", "")
-    style = PRIORITY_ROW_COLOR.get(raw, "")
-    return [style] * len(row)
-
 def styled_task_table(
     tasks: list[Task],
     include_freq: bool = True,
@@ -47,15 +41,17 @@ def styled_task_table(
     show_score: bool = False,
 ) -> "pd.io.formats.style.Styler":
     """Build a colour-coded, styled DataFrame from a list of Task objects."""
+    # Collect raw priority separately for row colouring — never put in the df
+    priorities = []
     rows = []
     for t in tasks:
+        priorities.append(t.priority)
         row = {
             "Pet":       t.pet_name or "—",
             "Task":      t.title,
             "⏱ Min":     t.duration_minutes,
             "Priority":  fmt_priority(t.priority),
             "Time slot": fmt_time(t.preferred_time),
-            "_priority": t.priority,
         }
         if include_freq:
             row["Frequency"] = fmt_freq(t.frequency)
@@ -64,14 +60,12 @@ def styled_task_table(
         rows.append(row)
 
     df = pd.DataFrame(rows)
-    hidden = ["_priority"]
-    styler = (
-        df.style
-        .apply(_priority_row_style, axis=1)
-        .hide(axis="index")
-        .hide(hidden, axis="columns")
-    )
-    return styler
+
+    def _row_style(row: pd.Series) -> list[str]:
+        style = PRIORITY_ROW_COLOR.get(priorities[row.name], "")
+        return [style] * len(row)
+
+    return df.style.apply(_row_style, axis=1).hide(axis="index")
 
 # ---------------------------------------------------------------------------
 # Page config
