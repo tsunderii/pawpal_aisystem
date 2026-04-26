@@ -280,14 +280,8 @@ ai110-module2show-pawpal-starter/
 
 ## Screenshots
 
-**Owner setup**
-![Owner Info](Screenshot%202026-03-28%20at%205.03.07%20PM.png)
-
-**Adding a pet**
-![Add a Pet](Screenshot%202026-03-28%20at%205.03.17%20PM.png)
-
 **Adding a task**
-![Add a Task](Screenshot%202026-03-28%20at%205.03.51%20PM.png)
+![Add a Task](Screenshot%202026-04-25%20at%2011.42.55%20PM.png)
 
-**Pending tasks and schedule generation**
-![Pending Tasks and Schedule](Screenshot%202026-03-28%20at%205.03.59%20PM.png)
+**Pending tasks**
+![Pending Tasks](Screenshot%202026-04-25%20at%2011.43.05%20PM.png)
