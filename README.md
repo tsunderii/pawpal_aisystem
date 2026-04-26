@@ -24,7 +24,7 @@ The AI Planner tab lets you ask questions like *"Plan my day"* or *"What should 
 
 ## System Architecture
 
-![System Diagram](system_diagram.png)
+![System Diagram](assets/system_diagram.png)
 
 The system is organized into five layers that data flows through left-to-right:
 
@@ -285,7 +285,7 @@ ai110-module2show-pawpal-starter/
 ## Screenshots
 
 **Adding a task**
-![Add a Task](Screenshot%202026-04-25%20at%2011.42.55%20PM.png)
+![Add a Task](assets/Screenshot%202026-04-25%20at%2011.42.55%20PM.png)
 
 **Pending tasks**
-![Pending Tasks](Screenshot%202026-04-25%20at%2011.43.05%20PM.png)
+![Pending Tasks](assets/Screenshot%202026-04-25%20at%2011.43.05%20PM.png)
