@@ -2,6 +2,10 @@
 
 > A smart daily scheduling assistant for pet owners, built with Python, Streamlit, and Gemini. The system plans your day around your pets' care needs, detects scheduling conflicts, and includes an AI planning agent that reasons over your live task data using tool calls.
 
+## Video Walkthrough
+
+[▶ Watch the demo (Google Drive)](https://drive.google.com/file/d/1pEP2yo51ZBZesmodcvvn36yzfOKH_MN9/view)
+
 ---
 
 ## Original Project (Modules 1–3)
